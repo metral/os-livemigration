@@ -1,0 +1,98 @@
+<link href="github.css" rel="stylesheet"></link>
+
+<!---------------------------------------------------------------------------->
+
+<h1>Enable live-migration on OpenStack</h1>
+
+<!---------------------------------------------------------------------------->
+
+<h3>Description</h3>
+
+<p>These scripts will configure shared UID &amp; GID's and permissions across all 
+cluster nodes for the services libvirt, nova, kvm, libvirt-qemu &amp; 
+libvirt-dnsmasq to allow for the usage of instances off of a shared 
+NFS server back-end.</p>
+
+<p>These scripts assume:</p>
+
+<ul>
+<li>A vanilla OpenStack installation with nodes assumming either a controller or
+compute role.
+<ul>
+<li>I'm currently using OpenStack Essex 2012.1.3-dev</li>
+</ul></li>
+<li>That all nodes, controllers &amp; computes, have DNS or /etc/hosts configured to 
+know of the rest of the nodes in the cluster via hostname since 
+live-migration requires it.</li>
+</ul>
+
+<p>Alternations performed:</p>
+
+<pre><code>- Controller:
+    - Installs libvirt-bin &amp; kvm
+    - Alters the proper linux UID &amp; GID's
+    - Sets up an NFS Server
+- Compute:
+    - Alters the proper linux UID &amp; GID's
+    - Updates the libvirt configurations
+    - Sets up an NFS client to the NFS server on the controller node
+</code></pre>
+
+<!---------------------------------------------------------------------------->
+
+<h3>Installation/Modifications</h3>
+
+<ul>
+<li>Controller:
+<ul>
+<li><code>./setup_controller.sh</code></li>
+<li><code>reboot</code></li>
+</ul></li>
+<li>Compute
+<ul>
+<li><code>./setup_compute.sh &lt;CONTROLLER_IP&gt;</code>
+<ul>
+<li>i.e. <code>./setup_compute.sh 10.1.1.1</code></li>
+</ul></li>
+<li><code>reboot</code></li>
+</ul></li>
+</ul>
+
+<!---------------------------------------------------------------------------->
+
+<h3>Using Live-Migration</h3>
+
+<ol>
+<li>Boot up a VM in nova from the controller:
+<ul>
+<li><code>nova boot --flavor=&lt;FLAVOR&gt; --image=&lt;IMAGE&gt; &lt;VM_NAME&gt;</code></li>
+</ul></li>
+<li>Show VM details:
+<ul>
+<li><code>nova show &lt;VM_NAME&gt;</code></li>
+<li>This VM should be on one of the compute node hosts</li>
+</ul></li>
+<li>Verify that the hosts are using &amp; can see the instance on the shared NFS server
+<ul>
+<li><code>ls -alh /var/lib/nova/instances/&lt;INSTANCE_NAME&gt;</code></li>
+</ul></li>
+<li>Once the VM is up, perform the live-migration from the controller
+<ul>
+<li><code>nova live-migration &lt;VM_NAME&gt; &lt;OTHER_COMPUTE_HOSTNAME&gt;</code></li>
+<li>Remember, all nodes should have DNS &amp; /etc/hosts configured to know of
+the rest of the nodes via hostname for this to work</li>
+</ul></li>
+<li>View migration status from controller:
+<ul>
+<li><code>nova list</code></li>
+</ul></li>
+<li>Once the migration is done &amp; the VM is active, verify VM is in fact no 
+longer running on original compute node &amp; instead it
+is on the new node by viewing the qemu process details on both compute nodes:
+<ul>
+<li><code>ps aux | grep qemu</code></li>
+<li>The qemu process should only be now on the new compute node</li>
+</ul></li>
+</ol>
+
+<!---------------------------------------------------------------------------->
