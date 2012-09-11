@@ -61,6 +61,6 @@ Alternations performed:
 longer running on original compute node & instead it
 is on the new node by viewing the qemu process details on both compute nodes:
     - `ps aux | grep qemu`
-    - The qemu process should only be now on the new compute node
+    - The qemu process should only be on the new compute node
 
 <!---------------------------------------------------------------------------->
