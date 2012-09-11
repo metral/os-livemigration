@@ -14,7 +14,7 @@ These scripts assume:
 
 - A vanilla OpenStack installation with nodes assumming either a controller or
 compute role.
-    -  I'm currently using OpenStack Essex 2012.1.3-dev
+    -  I'm currently using OpenStack Essex 2012.1.3-dev on Ubuntu 12.04
 - That all nodes, controllers & computes, have DNS or /etc/hosts configured to 
 know of the rest of the nodes in the cluster via hostname since 
 live-migration requires it.

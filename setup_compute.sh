@@ -10,7 +10,7 @@ for a in libvirt-bin nova-network nova-compute nova-vncproxy ; \
 killall -9 dnsmasq
 
 # Store & set old and new uid & gid's for:
-# libvirtd, nova, libvirt-dnsmasq & libvirt-qemu
+# libvirtd, nova, libvirt-dnsmasq, kvm & libvirt-qemu
 orig_libvirtd_gid=`getent group libvirtd | cut -d ":" -f3`
 new_libvirtd_gid=2000
 
