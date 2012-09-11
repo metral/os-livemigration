@@ -14,7 +14,7 @@ killall -9 dnsmasq
 sudo apt-get update ; sudo apt-get install libvirt-bin kvm -y
 
 # Store & set old and new uid & gid's for:
-# libvirtd, nova, libvirt-dnsmasq & libvirt-qemu
+# libvirtd, nova, libvirt-dnsmasq, kvm & libvirt-qemu
 orig_libvirtd_gid=`getent group libvirtd | cut -d ":" -f3`
 new_libvirtd_gid=2000
 
