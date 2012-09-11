@@ -8,7 +8,7 @@
 These scripts will configure shared UID & GID's and permissions across all 
 cluster nodes for the services libvirt, nova, kvm, libvirt-qemu & 
 libvirt-dnsmasq to allow for the usage of instances off of a shared 
-NFS server back-end.
+NFS server back-end, and ultimately, enable full live-migration of said instances.
 
 These scripts assume:
 
